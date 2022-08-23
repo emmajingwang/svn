@@ -9,10 +9,10 @@ from django.core.mail import send_mail
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 from django.template import Context
-from .svn import svn
-#from .schedule import task
+from .solution import svn
+#from .svn import svn
 import time, schedule
-from .models import Scheduledtask
+from .models import Scheduledtask 
 
 #############html page##################
 def index(request):
@@ -21,16 +21,24 @@ def index(request):
         if form.is_valid():
             repo=request.POST['account']
             email = request.POST['email']
-            #results = svn(repo)
-            svn(repo,email)   
-            return render(request, 'user/report.html', {'title': 'report'})
+            username=request.POST['username']
+            password=request.POST['password']
+            package=request.POST['package']
+            project=request.POST['project']
+            branchNum=request.POST['branch_name']
+        #    redirect('report')
+           # svn(repo,username,password,package,email,project,branchNum)
+            svn(repo,email,package,project,branchNum)
+            #svn(repo,email)
+        #return redirect('report') 
+        return render(request, 'user/report.html', {'title': 'report'})  
+    
     else:
         form=InputForm()
-    return render(request, 'user/index.html', {'form': form, 'title': 'index'})
+        return render(request, 'user/index.html', {'form': form, 'title': 'index'})
 
 ############### report page#############
 def report(request):
-   
     return render(request, 'user/report.html', {'title':'report'})
 
 ######## schedule page ######
@@ -56,12 +64,12 @@ def task(request):
             
            # return render(request,'user/report.html',{'account':repo, 'email':email,' choice':choice})
             if choice == 1:
-                schedule.every(choice).day.at("14:17").do(svn,repo,email)
+                schedule.every(choice).day.at("16:28").do(svn,repo,email)
             else:
                 schedule.every(choice).days.at("14:17").do(svn,repo,email)
             while True:
                schedule.run_pending()
-               time.sleep(1)
+               time.sleep(60)
              
             
     else:

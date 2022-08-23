@@ -1,4 +1,4 @@
-
+import os
 from email.mime.application import MIMEApplication
 from fileinput import filename
 import os, subprocess,smtplib
@@ -8,34 +8,57 @@ from email.mime.base import MIMEBase
 from email import encoders
 
 
-def svn(repo_ip,email):
+#def svn(repo,username,password,package,email,project,branchNum):
+def svn(svn_address,email,package,project,branchNum):
     os.chdir('C:')
+    
     #create a new dir if it not exists
-    dir_path="C:/svn-tests"
+    dir_path="C:/svn-tests2"
     if not os.path.exists(dir_path):
         os.mkdir(dir_path)
-        
-    #create an arr to include all prjects 
-    projects=['schoolbus','hmcr','hets']
-    output=''
 
-    #checkout the target project
-    for project in projects:
-        #go to target dir to checkout svn projects
-        os.chdir(dir_path)
-        os.system (('svn checkout https://' + repo_ip + '/svn/{}').format(project))
-       
+    #go to target dir to checkout svn projects
+    os.chdir(dir_path)
+    
+    output=''
+    results=''
+    foundPackage=''
+    #package choice as condition 
+    #if using npm package, do npm check. otherwise,do nuget check
+    if package =='npm':
+        os.system('svn checkout https://' + svn_address+'/svn/'+project)
         #go to the target project client dir to test npm package
-        newDir = 'C:/svn-tests/{}/client'.format(project)
+        newDir = 'C:/svn-tests2/'+project+'/client'
         os.chdir(newDir)
 
         #save the results as string
         results = subprocess.getoutput("npm audit report")
-        output+='{}: '.format(project) + results + '\n\n\n'
+         
+    else:
+        #os.system ('svn checkout https://' + svn_address + '/svn/' +project +' --username '+username+' --password '+password)
+        os.system('svn checkout https://' + svn_address+'/svn/'+project+'/'+project+'-'+branchNum)
+       # path= dir_path +'/'+ project+'/'+project+'-'+branchNum+'/src/'+project
+       # path2=path+'/packages/packagereferences.csproj'
+       # path3=path+'/packages'
+        path=dir_path+'/'+project
+        path2=path+'/packagereferences.csproj'
+        #call to run the powershell script to create the packagereferences
+        os.system('powershell C:/svn/svn/dotnet '+ path +' '+path2)
+        #check any packages not installed yet
+        path3=path+'/'+project+'-'+branchNum+'/src/'+project +'/packages'
+        #os.system('powershell C:/svn/svn/check '+ path2+' '+path3)
+        foundPackage=subprocess.getoutput('powershell C:/svn/svn/check '+ path2+' '+path3)
+       # os.chdir(path3)
+        os.chdir(path)
+        os.system('dotnet restore')
         
-        #create a txt file to save the output
+        #save results as a string 
+        results=subprocess.getoutput("dotnet list package --vulnerable")
+
+    output += project+': \n\n' +foundPackage +'\n\n'+ results + '\n\n\n' 
+    #create a txt file to save the output
     try:
-        with open('report.txt','w') as f:
+        with open('C:/svn-tests2/report.txt','w') as f:
             f.write(output)
     except FileNotFoundError:
         print("Report not exists.")
@@ -58,7 +81,7 @@ def svn(repo_ip,email):
     message.attach(MIMEText(body, 'plain'))
 
     #open the file to be sent
-    filename='report.txt'
+    filename='C:/svn-tests2/report.txt'
     attachment=open(filename,'rb')
 
     # instance of MIMEBase and named as p
@@ -86,5 +109,3 @@ def svn(repo_ip,email):
 
     #terminating the session
     smtpObj.quit()
-       
-    

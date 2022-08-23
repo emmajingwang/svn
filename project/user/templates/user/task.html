@@ -1,8 +1,10 @@
 {% extends "user/index.html" %}
 {% load crispy_forms_tags %}
-{% block start %}
 
-<div class="content-section col-md-8 col-md-offset-2">
+
+{% block start %}
+ 
+<div class="content-section col-md-8 col-md-offset-2" id="schedule">
   <center>
     <form method="POST" style="border: 1px solid black; margin: 4%; padding:10%; border-radius:1%;">
         {% csrf_token %}
@@ -10,8 +12,28 @@
         {{ form|crispy}}
       </fieldset>
     
-      <button class="btn btn-outline-info" type="submit"><span class="glyphicon glyphicon-log-in"></span> &nbsp; Get Report</button>
+      <button class="btn btn-outline-info" type="submit" id="setSchedule"><span class="glyphicon glyphicon-log-in"></span> &nbsp; Get Report</button>
     </form>
   </center>
 </div>
+
+<div class="content-section col-md-8 col-md-offset-2" id="task">
+  <center>
+      <h1>Report</h1>
+      <p>The report will be sent to you soon!</P>
+  </center>       
+</div>
+
+<script>
+  $('#task').hide();
+
+  $('#setSchedule').click(
+    function() {
+      $('#task').show();
+      $('#schedule').hide();
+    }
+  )
+    
+</script>
 {% endblock start %}
+

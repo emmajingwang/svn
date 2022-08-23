@@ -87,9 +87,9 @@
   <div class="row">
     {% block start %}
     {% if user.is_authenticated %}
-    <center><h1>welcome back {{user.username}}!</h1></center>
+    <center><h1 id="welcome">welcome back {{user.username}}!</h1></center>
 
-    <div class="content-section col-md-8 col-md-offset-2">
+    <div class="content-section col-md-8 col-md-offset-2" id="signin">
       <center>
         <form method="POST" style="border: 1px solid black; margin: 4%; padding:10%; border-radius:1%;">
           {% csrf_token %}
@@ -97,19 +97,41 @@
             {{ form|crispy}}
           </fieldset>
         <center>
-          <button class="btn btn-outline-info" type="submit"><span class="glyphicon glyphicon-log-in"></span> &nbsp; Get Report</button>
+          <button class="btn btn-outline-info" type="submit" id="myButton"><span class="glyphicon glyphicon-log-in"></span> &nbsp; Get Report</button>
         </center>
         <br/>
         <sub><a href="{% url "task" %}" style="text-decoration: none; color: blue; padding:3%; cursor:pointer;">Want to make schedule?</a></sub>
         </form>
       </center>
     </div>
+
+    <div class="content-section col-md-8 col-md-offset-2" id="report">
+      <center>
+          <h1>Report</h1>
+          <p>The report will be sent to you soon!</P>
+      </center>       
+    </div>
+
   
     {% else %}
     <center><h1>log in, plz . . .</h1></center>
     {% endif %}
     {% endblock %}
   </div>
+   
+  <script>
+    $('#report').hide();
+    $('#myButton').click(
+      function() {
+        if($('#id_account')!="" && $('#id_email')!="" && $('#id_project')!= "") {
+          $('#report').show();
+          $('#signin').hide();
+          $('#welcome').hide();
+        }
+      }
+    )
+      
+  </script>  
 </body>
 
 </html>
