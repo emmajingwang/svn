@@ -101,7 +101,7 @@ def svn(svn_address,username,password,package,email,project,branchNum):
 
     try:
         #create SMTP session
-        smtpObj = smtplib.SMTP('apps.smtp.gov.bc.ca')
+        smtpObj = smtplib.SMTP('<replace email protocal>')
 
         smtpObj.sendmail(sender,receivers,message.as_string())        
         print ("Successfully sent email")
