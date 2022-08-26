@@ -1,4 +1,4 @@
-
+# solution for npm package check only
 from email.mime.application import MIMEApplication
 from fileinput import filename
 import os, subprocess,smtplib
@@ -76,7 +76,7 @@ def svn(repo_ip,email):
 
     try:
         #create SMTP session
-        smtpObj = smtplib.SMTP('apps.smtp.gov.bc.ca')
+        smtpObj = smtplib.SMTP('<email protocol>')
 
         smtpObj.sendmail(sender,receivers,message.as_string())        
         print ("Successfully sent email")

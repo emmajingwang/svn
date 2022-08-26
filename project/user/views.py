@@ -10,7 +10,6 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import get_template
 from django.template import Context
 from .solution import svn
-#from .svn import svn
 import time, schedule
 from .models import Scheduledtask 
 
@@ -26,11 +25,9 @@ def index(request):
             package=request.POST['package']
             project=request.POST['project']
             branchNum=request.POST['branch_name']
-        #    redirect('report')
-           # svn(repo,username,password,package,email,project,branchNum)
-            svn(repo,email,package,project,branchNum)
-            #svn(repo,email)
-        #return redirect('report') 
+        
+            svn(repo,username,password,package,email,project,branchNum)
+            #svn(repo,email,package,project,branchNum)
         return render(request, 'user/report.html', {'title': 'report'})  
     
     else:
@@ -45,28 +42,33 @@ def report(request):
 def task(request):
     if request.method == 'POST':
         form = ScheduleForm(request.POST)
-        if form.is_valid():
-           #repo=request.POST['account']
-           #email = request.POST['email'] 
-           #choice=int(request.POST['choice'])
-           #task(svn(repo,email), choice)
-           
+        if form.is_valid():   
+            #create an object and assign value to the properties
             job = Scheduledtask.objects.create()
             job.account=request.POST['account']
+            job.username=request.POST['username']
+            job.password=request.POST['password']
             job.email=request.POST['email']
+            job.package=request.POST['package']
+            job.project=request.POST['project']
             job.frequency = request.POST['choice']
+            job.branchNum=request.POST['branch_name']
             job.save()
             
-            #needs to be run in the backend!
-            repo = job.account
+            account= job.account
+            username=job.username
+            password=job.password
+            package=job.package
+            project=job.project
+            branchNum=job.branchNum
             email = job.email
             choice=int(job.frequency)
             
-           # return render(request,'user/report.html',{'account':repo, 'email':email,' choice':choice})
+            
             if choice == 1:
-                schedule.every(choice).day.at("16:28").do(svn,repo,email)
+                schedule.every(choice).day.at("13:55").do(svn,account,username,password,package,email,project,branchNum)
             else:
-                schedule.every(choice).days.at("14:17").do(svn,repo,email)
+                schedule.every(choice).days.at("14:17").do(svn,username,password,package,email,project,branchNum)
             while True:
                schedule.run_pending()
                time.sleep(60)
@@ -81,18 +83,6 @@ def register(request):
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             form.save()
-            #username = form.cleaned_data.get('username')
-            #email = form.cleaned_data.get('email')
-            ######################### mail system #################################### 
-            #htmly = get_template('user/Email.html')
-            #d = { 'username': username }
-            #subject, from_email, to = 'welcome', 'emma.wang@gov.bc.ca', email
-            #html_content = htmly.render(d)
-            #msg = EmailMultiAlternatives(subject, html_content, from_email, [to])
-            #msg.attach_alternative(html_content, "text/html")
-            #msg.send()
-            ################################################################## 
-            messages.success(request, f'Your account has been created ! You are now able to log in')
             return redirect('login')
     else:
         form = UserRegisterForm()
