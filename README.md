@@ -14,7 +14,7 @@ Current features:
 
 -All reports would be given back through clients' email
 
-Pre-requists:
+Pre-requisites:
 
 installed Django and set the environment path
 
