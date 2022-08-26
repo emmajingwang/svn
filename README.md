@@ -22,6 +22,8 @@ Local environment setup:
 
 git clone https://github.com/emmajingwang/svn.git
 
+replace the value in<> in solution.py file with the correct email protocol
+
 go to the working svn repo for example:C:\Work\svn> 
 
 activate the python virtual environment  C:\Work\svn>.\.venv\Scripts\activate
@@ -29,6 +31,18 @@ activate the python virtual environment  C:\Work\svn>.\.venv\Scripts\activate
 go to project repo: (.venv) C:\Work\svn>cd project
 
 run the server:  (.venv) C:\Work\svn\project>python manage.py runserver
+
+Using Visual Studio:
+
+press Shift+Ctrl +p to select Python Interpreter
+
+choose Python 3.10.4 ('.venv':venv) 
+
+Press Shift + Ctrl + ` to open/change to the virtual environment
+
+cd project
+
+python manage.py runserver
 
 
 
