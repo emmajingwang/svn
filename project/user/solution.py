@@ -7,9 +7,8 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 
-
-#def svn(repo,username,password,package,email,project,branchNum):
-def svn(svn_address,email,package,project,branchNum):
+def svn(svn_address,username,password,package,email,project,branchNum):
+#def svn(svn_address,email,package,project,branchNum):
     os.chdir('C:')
     
     #create a new dir if it not exists
@@ -35,20 +34,23 @@ def svn(svn_address,email,package,project,branchNum):
         results = subprocess.getoutput("npm audit report")
          
     else:
-        #os.system ('svn checkout https://' + svn_address + '/svn/' +project +' --username '+username+' --password '+password)
-        os.system('svn checkout https://' + svn_address+'/svn/'+project+'/'+project+'-'+branchNum)
-       # path= dir_path +'/'+ project+'/'+project+'-'+branchNum+'/src/'+project
-       # path2=path+'/packages/packagereferences.csproj'
-       # path3=path+'/packages'
+        
+        if(username=="" or password==""):
+            os.system ('svn checkout https://' + svn_address + '/svn/' +project +' --username '+username+' --password '+password)
+        else:   
+            os.system('svn checkout https://' + svn_address+'/svn/'+project+'/'+project+'-'+branchNum)
+        
         path=dir_path+'/'+project
         path2=path+'/packagereferences.csproj'
+        
         #call to run the powershell script to create the packagereferences
         os.system('powershell C:/svn/svn/dotnet '+ path +' '+path2)
+        
         #check any packages not installed yet
         path3=path+'/'+project+'-'+branchNum+'/src/'+project +'/packages'
-        #os.system('powershell C:/svn/svn/check '+ path2+' '+path3)
+        
         foundPackage=subprocess.getoutput('powershell C:/svn/svn/check '+ path2+' '+path3)
-       # os.chdir(path3)
+       
         os.chdir(path)
         os.system('dotnet restore')
         
@@ -99,7 +101,7 @@ def svn(svn_address,email,package,project,branchNum):
 
     try:
         #create SMTP session
-        smtpObj = smtplib.SMTP('apps.smtp.gov.bc.ca')
+        smtpObj = smtplib.SMTP('<replace email protocal>')
 
         smtpObj.sendmail(sender,receivers,message.as_string())        
         print ("Successfully sent email")

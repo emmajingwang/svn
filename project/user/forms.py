@@ -12,18 +12,24 @@ class UserRegisterForm(UserCreationForm):
  
 PACKAGE_CHOICES=[('npm','NPM'),('nuget','NUGET'),]        
 class InputForm(forms.Form):
-    account = forms.CharField(label='SVN-Account', max_length=100)
+    account = forms.CharField(label='SVN-Account', max_length=100, 
+                            widget= forms.TextInput(attrs={'id':'account'}))
     username=forms.CharField(label='Username', required=False,max_length=200)
     password=forms.CharField(label='Password',required=False, max_length=200)
     package=forms.CharField(label='Please choose the package used in your project', widget=forms.Select(choices=PACKAGE_CHOICES))
-    email= forms.EmailField(label='Email Address', max_length = 200)
-    project=forms.CharField(label='Project Name', max_length=200)
+    email= forms.EmailField(label='Email Address', max_length = 200,widget= forms.EmailInput(attrs={'id':'email'}))
+    project=forms.CharField(label='Project Name', max_length=200, widget= forms.TextInput(attrs={'id':'project'}))
     branch_name=forms.CharField(label='Branch number', required=False, max_length=30)
      
 REPORT_CHOICES= [('1', 'Everyday'),('7','Every Week'),]
   
 class ScheduleForm(forms.Form):
     account = forms.CharField(label='SVN-Account', max_length=100)
+    username=forms.CharField(label='Username', required=False,max_length=200)
+    password=forms.CharField(label='Password',required=False, max_length=200)
     email= forms.CharField(label='Email Address', max_length = 200)
+    package=forms.CharField(label='Please choose the package used in your project', widget=forms.Select(choices=PACKAGE_CHOICES))
+    project=forms.CharField(label='Project Name', max_length=200)
+    branch_name=forms.CharField(label='Branch number', required=False, max_length=30)
     choice=forms.CharField(label='How oftern would you like to receive your report?', widget=forms.Select(choices=REPORT_CHOICES))
         
